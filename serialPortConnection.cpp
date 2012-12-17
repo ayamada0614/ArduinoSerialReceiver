@@ -81,7 +81,8 @@ void parent_process(pid_t result_pid) {
     int i = 0;  
     int inputcount = 0;  
   
-    int data = 500;
+    int data = 0;
+    int j = 0;
   
     while (1) {  
 
@@ -90,18 +91,20 @@ void parent_process(pid_t result_pid) {
   
         //fgets(input, sizeof(input), stdin);  
         //fflush(stdin);  
+        data++;     
         sprintf(input, "%d", data);
-        usleep(15*1000); // usec
   
-        for (i = 0; i < BUFFSIZE; i++) {  
+        for (i = 0; i < BUFFSIZE; i++) {
+    
             if (input[i] == 0) {  
                 inputcount = i;  
                 input[i] = 13;  
                 input[i + 1] = 10;  
                 break;  
-            }  
-        }  
-  
+            }
+           
+        }
+       
         writecount = write(fd, &input, inputcount);  
         if (writecount < 0) {  
             fprintf(stdout, "Could not write to serial port %d\n", writecount);  
@@ -110,7 +113,18 @@ void parent_process(pid_t result_pid) {
             fprintf(stdout, "Send %d bytes\n", writecount);  
   
         }  
-  
+
+      usleep(15*1000); // usec
+
+      if(j >= 1000 - 1)
+      {
+        j = 0;
+        data = 0;
+      }else{
+        j++;
+      }
+      
+      
     }  
 }  
   
